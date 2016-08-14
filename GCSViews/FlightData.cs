@@ -1261,109 +1261,109 @@ namespace MissionPlanner.GCSViews
                         }
 
                         // add gimbal point center
-                        try
-                        {
-                            if (MainV2.comPort.MAV.param.ContainsKey("MNT_STAB_TILT"))
-                            {
-                                float temp1 = (float)MainV2.comPort.MAV.param["MNT_STAB_TILT"];
-                                float temp2 = (float)MainV2.comPort.MAV.param["MNT_STAB_ROLL"];
+                        //try
+                        //{
+                        //    if (MainV2.comPort.MAV.param.ContainsKey("MNT_STAB_TILT"))
+                        //    {
+                        //        float temp1 = (float)MainV2.comPort.MAV.param["MNT_STAB_TILT"];
+                        //        float temp2 = (float)MainV2.comPort.MAV.param["MNT_STAB_ROLL"];
 
-                                float temp3 = (float)MainV2.comPort.MAV.param["MNT_TYPE"];
+                        //        float temp3 = (float)MainV2.comPort.MAV.param["MNT_TYPE"];
 
-                                if (MainV2.comPort.MAV.param.ContainsKey("MNT_STAB_PAN") &&
-                                    // (float)MainV2.comPort.MAV.param["MNT_STAB_PAN"] == 1 &&
-                                    ((float)MainV2.comPort.MAV.param["MNT_STAB_TILT"] == 1 &&
-                                      (float)MainV2.comPort.MAV.param["MNT_STAB_ROLL"] == 0) ||
-                                     (float)MainV2.comPort.MAV.param["MNT_TYPE"] == 4) // storm driver
-                                {
-                                    var marker = GimbalPoint.ProjectPoint();
+                        //        if (MainV2.comPort.MAV.param.ContainsKey("MNT_STAB_PAN") &&
+                        //            // (float)MainV2.comPort.MAV.param["MNT_STAB_PAN"] == 1 &&
+                        //            ((float)MainV2.comPort.MAV.param["MNT_STAB_TILT"] == 1 &&
+                        //              (float)MainV2.comPort.MAV.param["MNT_STAB_ROLL"] == 0) ||
+                        //             (float)MainV2.comPort.MAV.param["MNT_TYPE"] == 4) // storm driver
+                        //        {
+                        //            var marker = GimbalPoint.ProjectPoint();
 
-                                    if (marker != PointLatLngAlt.Zero)
-                                    {
-                                        MainV2.comPort.MAV.cs.GimbalPoint = marker;
+                        //            if (marker != PointLatLngAlt.Zero)
+                        //            {
+                        //                MainV2.comPort.MAV.cs.GimbalPoint = marker;
 
-                                        addMissionRouteMarker(new GMarkerGoogle(marker, GMarkerGoogleType.blue_dot)
-                                        {
-                                            ToolTipText = "Camera Target\n" + marker,
-                                            ToolTipMode = MarkerTooltipMode.OnMouseOver
-                                        });
-                                    }
-                                }
-                            }
+                        //                addMissionRouteMarker(new GMarkerGoogle(marker, GMarkerGoogleType.blue_dot)
+                        //                {
+                        //                    ToolTipText = "Camera Target\n" + marker,
+                        //                    ToolTipMode = MarkerTooltipMode.OnMouseOver
+                        //                });
+                        //            }
+                        //        }
+                        //    }
 
                             
-                            // cleanup old - no markers where added, so remove all old 
-                            if (MainV2.comPort.MAV.camerapoints.Count == 0)
-                                photosoverlay.Markers.Clear();
+                        //    // cleanup old - no markers where added, so remove all old 
+                        //    if (MainV2.comPort.MAV.camerapoints.Count == 0)
+                        //        photosoverlay.Markers.Clear();
 
-                            var min_interval = 0.0;
-                            if (MainV2.comPort.MAV.param.ContainsKey("CAM_MIN_INTERVAL"))
-                                min_interval = MainV2.comPort.MAV.param["CAM_MIN_INTERVAL"].Value/1000.0;
+                        //    var min_interval = 0.0;
+                        //    if (MainV2.comPort.MAV.param.ContainsKey("CAM_MIN_INTERVAL"))
+                        //        min_interval = MainV2.comPort.MAV.param["CAM_MIN_INTERVAL"].Value/1000.0;
 
-                            // set fov's based on last grid calc
-                            if (Settings.Instance["camera_fovh"] != null)
-                            {
-                                GMapMarkerPhoto.hfov = Settings.Instance.GetDouble("camera_fovh");
-                                GMapMarkerPhoto.vfov = Settings.Instance.GetDouble("camera_fovv");
-                            }
+                        //    // set fov's based on last grid calc
+                        //    if (Settings.Instance["camera_fovh"] != null)
+                        //    {
+                        //        GMapMarkerPhoto.hfov = Settings.Instance.GetDouble("camera_fovh");
+                        //        GMapMarkerPhoto.vfov = Settings.Instance.GetDouble("camera_fovv");
+                        //    }
 
-                            // add new - populate camera_feedback to map
-                            double oldtime = double.MinValue;
-                            foreach (var mark in MainV2.comPort.MAV.camerapoints.ToArray())
-                            {
-                                var timesincelastshot = (mark.time_usec/1000.0)/1000.0 - oldtime;
-                                MainV2.comPort.MAV.cs.timesincelastshot = timesincelastshot;
-                                bool contains = photosoverlay.Markers.Any(p => p.Tag.Equals(mark.time_usec));
-                                if (!contains)
-                                {
-                                    if (timesincelastshot < min_interval)
-                                        addMissionPhotoMarker(new GMapMarkerPhoto(mark, true));
-                                    else
-                                        addMissionPhotoMarker(new GMapMarkerPhoto(mark, false));
-                                }
-                                oldtime = (mark.time_usec/1000.0)/1000.0;
-                            }
+                        //    // add new - populate camera_feedback to map
+                        //    double oldtime = double.MinValue;
+                        //    foreach (var mark in MainV2.comPort.MAV.camerapoints.ToArray())
+                        //    {
+                        //        var timesincelastshot = (mark.time_usec/1000.0)/1000.0 - oldtime;
+                        //        MainV2.comPort.MAV.cs.timesincelastshot = timesincelastshot;
+                        //        bool contains = photosoverlay.Markers.Any(p => p.Tag.Equals(mark.time_usec));
+                        //        if (!contains)
+                        //        {
+                        //            if (timesincelastshot < min_interval)
+                        //                addMissionPhotoMarker(new GMapMarkerPhoto(mark, true));
+                        //            else
+                        //                addMissionPhotoMarker(new GMapMarkerPhoto(mark, false));
+                        //        }
+                        //        oldtime = (mark.time_usec/1000.0)/1000.0;
+                        //    }
                             
-                            // age current
-                            int camcount = MainV2.comPort.MAV.camerapoints.Count;
-                            int a = 0;
-                            foreach (var mark in photosoverlay.Markers)
-                            {
-                                if (mark is GMapMarkerPhoto)
-                                {
-                                    if (CameraOverlap)
-                                    {
-                                        var marker = ((GMapMarkerPhoto) mark);
-                                        // abandon roll higher than 25 degrees
-                                        if (Math.Abs(marker.Roll) < 25)
-                                        {
-                                            MainV2.comPort.MAV.GMapMarkerOverlapCount.Add(
-                                                ((GMapMarkerPhoto) mark).footprintpoly);
-                                        }
-                                    }
-                                    if (a < (camcount-4))
-                                        ((GMapMarkerPhoto)mark).drawfootprint = false;
-                                }
-                                a++;
-                            }
+                        //    // age current
+                        //    int camcount = MainV2.comPort.MAV.camerapoints.Count;
+                        //    int a = 0;
+                        //    foreach (var mark in photosoverlay.Markers)
+                        //    {
+                        //        if (mark is GMapMarkerPhoto)
+                        //        {
+                        //            if (CameraOverlap)
+                        //            {
+                        //                var marker = ((GMapMarkerPhoto) mark);
+                        //                // abandon roll higher than 25 degrees
+                        //                if (Math.Abs(marker.Roll) < 25)
+                        //                {
+                        //                    MainV2.comPort.MAV.GMapMarkerOverlapCount.Add(
+                        //                        ((GMapMarkerPhoto) mark).footprintpoly);
+                        //                }
+                        //            }
+                        //            if (a < (camcount-4))
+                        //                ((GMapMarkerPhoto)mark).drawfootprint = false;
+                        //        }
+                        //        a++;
+                        //    }
 
-                            if (CameraOverlap)
-                            {
-                                if (!kmlpolygons.Markers.Contains(MainV2.comPort.MAV.GMapMarkerOverlapCount) &&
-                                    camcount > 0)
-                                {
-                                    kmlpolygons.Markers.Clear();
-                                    kmlpolygons.Markers.Add(MainV2.comPort.MAV.GMapMarkerOverlapCount);
-                                }
-                            }
-                            else if (kmlpolygons.Markers.Contains(MainV2.comPort.MAV.GMapMarkerOverlapCount))
-                            {
-                                kmlpolygons.Markers.Clear();
-                            }
-                        }
-                        catch
-                        {
-                        }
+                        //    if (CameraOverlap)
+                        //    {
+                        //        if (!kmlpolygons.Markers.Contains(MainV2.comPort.MAV.GMapMarkerOverlapCount) &&
+                        //            camcount > 0)
+                        //        {
+                        //            kmlpolygons.Markers.Clear();
+                        //            kmlpolygons.Markers.Add(MainV2.comPort.MAV.GMapMarkerOverlapCount);
+                        //        }
+                        //    }
+                        //    else if (kmlpolygons.Markers.Contains(MainV2.comPort.MAV.GMapMarkerOverlapCount))
+                        //    {
+                        //        kmlpolygons.Markers.Clear();
+                        //    }
+                        //}
+                        //catch
+                        //{
+                        //}
 
                         lock (MainV2.instance.adsblock)
                         {

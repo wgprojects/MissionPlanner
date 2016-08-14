@@ -1346,8 +1346,8 @@ namespace MissionPlanner
                         _connectionControl.TOOL_APMFirmware.Items.IndexOf(Firmwares.ArduPlane);
                 }
 
-                // check for newer firmware
-                var softwares = Firmware.LoadSoftwares();
+                // don't check for newer firmware
+                var softwares = new List<Firmware.software>();// Firmware.LoadSoftwares();
 
                 if (softwares.Count > 0)
                 {

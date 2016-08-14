@@ -35,7 +35,7 @@ namespace MissionPlanner
         public static string[] args = new string[] {};
         public static Bitmap SplashBG = null;
 
-        public static string[] names = new string[] { "VVVVZ" };
+        public static string[] names = new string[] { "VVVVZ", "Mission Planner" };
 
         /// <summary>
         /// The main entry point for the application.

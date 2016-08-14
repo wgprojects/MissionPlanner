@@ -14,6 +14,17 @@ namespace MissionPlanner
 {
     public class CurrentState : ICloneable
     {
+
+        // Anemometer
+        [DisplayText("WindDir (cd)")]
+        public int wind_angle_cd { get; set; }
+
+        [DisplayText("WindDir (cts)")]
+        public int raw_wind_ang_cts { get; set; }
+
+        [DisplayText("WindDirCal (cts)")]
+        public int raw_wind_ang_cal_cts { get; set; }
+
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         public event EventHandler csCallBack;
@@ -1635,6 +1646,20 @@ namespace MissionPlanner
                         accel_cal_x = sensofs.accel_cal_x;
                         accel_cal_y = sensofs.accel_cal_y;
                         accel_cal_z = sensofs.accel_cal_z;
+                    }
+
+
+                    mavLinkMessage = MAV.getPacket((uint)MAVLink.MAVLINK_MSG_ID.ANEM_DATA);
+                    //mavLinkMessage = MAV.getPacket((uint)230);
+
+                    if (mavLinkMessage != null)
+                    {
+                        var anem = mavLinkMessage.ToStructure<MAVLink.mavlink_anem_data_t>();
+
+
+                        wind_angle_cd = anem.dir_cd;
+                        raw_wind_ang_cts = anem.raw_dir;
+                        raw_wind_ang_cal_cts = anem.cal_dir;
                     }
 
                     mavLinkMessage = MAV.getPacket((uint) MAVLink.MAVLINK_MSG_ID.ATTITUDE);

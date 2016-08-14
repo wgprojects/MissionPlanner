@@ -296,12 +296,12 @@ namespace MissionPlanner.Utilities
                                             {
                                                 //name = 
 
-                                                lock (this)
-                                                {
-                                                    ingetapmversion++;
-                                                }
+                                                //lock (this)
+                                                //{
+                                                //    ingetapmversion++;
+                                                //}
 
-                                                System.Threading.ThreadPool.QueueUserWorkItem(getAPMVersion, temp);
+                                                //System.Threading.ThreadPool.QueueUserWorkItem(getAPMVersion, temp);
 
                                                 //if (name != "")
                                                 //temp.name = name;
@@ -407,6 +407,7 @@ namespace MissionPlanner.Utilities
         /// <returns></returns>
         void getAPMVersion(object tempin)
         {
+            return;// SKIP
             System.Threading.Thread.CurrentThread.CurrentUICulture = L10N.ConfigLang;
 
             try

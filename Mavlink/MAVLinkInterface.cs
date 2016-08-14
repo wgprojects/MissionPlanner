@@ -3138,7 +3138,10 @@ Please check the following
             MAVLinkMessage message = new MAVLinkMessage(buffer);
 
             uint msgid = message.msgid;
+            if(msgid == 188 )
+            {
 
+            }
             message_info msginfo = MAVLINK_MESSAGE_INFOS.SingleOrDefault(p => p.msgid == msgid);
 
             // calc crc

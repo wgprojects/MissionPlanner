@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 public partial class MAVLink
 {
-    public const string MAVLINK_BUILD_DATE = "Tue Jul 26 2016";
+    public const string MAVLINK_BUILD_DATE = "Sun Aug 14 2016";
     public const string MAVLINK_WIRE_PROTOCOL_VERSION = "2.0";
     public const int MAVLINK_MAX_PAYLOAD_LEN = 255;
 
@@ -189,7 +189,8 @@ public partial class MAVLink
 		new message_info(184, "REMOTE_LOG_DATA_BLOCK", 159, 206, 206, typeof( mavlink_remote_log_data_block_t )),
 		new message_info(185, "REMOTE_LOG_BLOCK_STATUS", 186, 7, 7, typeof( mavlink_remote_log_block_status_t )),
 		new message_info(186, "LED_CONTROL", 72, 29, 29, typeof( mavlink_led_control_t )),
-		new message_info(191, "MAG_CAL_PROGRESS", 92, 27, 27, typeof( mavlink_mag_cal_progress_t )),
+        new message_info(188, "ANEM_DATA", 51, 10, 10, typeof( mavlink_anem_data_t )),
+        new message_info(191, "MAG_CAL_PROGRESS", 92, 27, 27, typeof( mavlink_mag_cal_progress_t )),
 		new message_info(192, "MAG_CAL_REPORT", 36, 44, 44, typeof( mavlink_mag_cal_report_t )),
 		new message_info(193, "EKF_STATUS_REPORT", 71, 22, 22, typeof( mavlink_ekf_status_report_t )),
 		new message_info(194, "PID_TUNING", 98, 25, 25, typeof( mavlink_pid_tuning_t )),
@@ -490,6 +491,7 @@ ESTIMATOR_STATUS = 230,
 WIND_COV = 231,
 GPS_INPUT = 232,
 GPS_RTCM_DATA = 233,
+ANEM_DATA = 188,
 VIBRATION = 241,
 HOME_POSITION = 242,
 SET_HOME_POSITION = 243,
@@ -3659,6 +3661,21 @@ UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT = 10003,
         public  Single rpm1;
             /// <summary> RPM Sensor2 </summary>
         public  Single rpm2;
+    
+    };
+
+
+    [StructLayout(LayoutKind.Sequential,Pack=1,Size=10)]
+    public struct mavlink_anem_data_t
+    {
+        /// <summary> anemometer speed (knots) </summary>
+        public  Single speed_kt;
+            /// <summary> raw anemometer direction (counts) </summary>
+        public  Int16 raw_dir;
+            /// <summary> anemometer direction calibration (counts) </summary>
+        public  Int16 cal_dir;
+            /// <summary> anemometer direction calibration (centi-degrees) </summary>
+        public  Int16 dir_cd;
     
     };
 
