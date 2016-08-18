@@ -1424,7 +1424,7 @@ namespace MissionPlanner.GCSViews
                                     addMissionRouteMarker(marker);
                                 }
                             }
-
+                            
                             if (route.Points[route.Points.Count - 1].Lat != 0 &&
                                 (mapupdate.AddSeconds(3) < DateTime.Now) && CHK_autopan.Checked)
                             {

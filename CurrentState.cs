@@ -1686,6 +1686,10 @@ namespace MissionPlanner
 
                         alt = loc.relative_alt/1000.0f;
 
+                        //TODO REMOVE (WG) 
+                        loc.lat = 10;
+                        loc.lon = 1000;
+
                         useLocation = true;
                         if (loc.lat == 0 && loc.lon == 0)
                         {

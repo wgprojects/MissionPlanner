@@ -528,7 +528,7 @@ union px4_custom_mode {
             else if (MAV.aptype == MAVLink.MAV_TYPE.GROUND_ROVER)
             {
                 return  (new GMapMarkerRover(portlocation, MAV.cs.yaw,
-                    MAV.cs.groundcourse, MAV.cs.nav_bearing, MAV.cs.target_bearing));
+                    MAV.cs.groundcourse, MAV.cs.nav_bearing, MAV.cs.target_bearing, (((float)MAV.cs.wind_angle_cd)/100 )));
             }
             else if (MAV.aptype == MAVLink.MAV_TYPE.HELICOPTER)
             {
@@ -773,14 +773,16 @@ union px4_custom_mode {
         float cog = -1;
         float target = -1;
         float nav_bearing = -1;
+        float apparent_wind = -1;
 
-        public GMapMarkerRover(PointLatLng p, float heading, float cog, float nav_bearing, float target)
+        public GMapMarkerRover(PointLatLng p, float heading, float cog, float nav_bearing, float target, float apparent_wind)
             : base(p)
         {
             this.heading = heading;
             this.cog = cog;
             this.target = target;
             this.nav_bearing = nav_bearing;
+            this.apparent_wind = apparent_wind;
             Size = SizeSt;
         }
 
@@ -807,6 +809,12 @@ union px4_custom_mode {
                 (float) Math.Sin((cog - 90)*deg2rad)*length);
             g.DrawLine(new Pen(Color.Orange, 2), 0.0f, 0.0f, (float) Math.Cos((target - 90)*deg2rad)*length,
                 (float) Math.Sin((target - 90)*deg2rad)*length);
+
+            float apparent_wind_absolute = apparent_wind + heading;
+            g.DrawLine(new Pen(Color.Magenta, 2), 0.0f, 0.0f, (float)Math.Cos((apparent_wind_absolute - 90) * deg2rad) * length,
+                        (float)Math.Sin((apparent_wind_absolute - 90) * deg2rad) * length);
+
+            
             // anti NaN
 
             try
