@@ -528,7 +528,13 @@ union px4_custom_mode {
             else if (MAV.aptype == MAVLink.MAV_TYPE.GROUND_ROVER)
             {
                 return  (new GMapMarkerRover(portlocation, MAV.cs.yaw,
-                    MAV.cs.groundcourse, MAV.cs.nav_bearing, MAV.cs.target_bearing, (((float)MAV.cs.wind_angle_cd)/100 )));
+                    MAV.cs.groundcourse, MAV.cs.nav_bearing, MAV.cs.target_bearing));
+            }
+            else if (MAV.aptype == MAVLink.MAV_TYPE.SURFACE_BOAT)
+            {
+                return (new GMapMarkerSailBoat(portlocation, MAV.cs.yaw,
+                    MAV.cs.groundcourse, MAV.cs.nav_bearing, MAV.cs.target_bearing,
+                    MAV.cs.wind_angle_cd / 100f, MAV.cs.ch1out, MAV.cs.ch5out));
             }
             else if (MAV.aptype == MAVLink.MAV_TYPE.HELICOPTER)
             {
@@ -562,7 +568,6 @@ union px4_custom_mode {
                 return (new GMapMarkerSingle(portlocation, MAV.cs.yaw,
                    MAV.cs.groundcourse, MAV.cs.nav_bearing, MAV.sysid));
             }
-            else
             {
                 // unknown type
                 return (new GMarkerGoogle(portlocation, GMarkerGoogleType.green_dot));
@@ -773,16 +778,14 @@ union px4_custom_mode {
         float cog = -1;
         float target = -1;
         float nav_bearing = -1;
-        float apparent_wind = -1;
 
-        public GMapMarkerRover(PointLatLng p, float heading, float cog, float nav_bearing, float target, float apparent_wind)
+        public GMapMarkerRover(PointLatLng p, float heading, float cog, float nav_bearing, float target)
             : base(p)
         {
             this.heading = heading;
             this.cog = cog;
             this.target = target;
             this.nav_bearing = nav_bearing;
-            this.apparent_wind = apparent_wind;
             Size = SizeSt;
         }
 
@@ -809,12 +812,6 @@ union px4_custom_mode {
                 (float) Math.Sin((cog - 90)*deg2rad)*length);
             g.DrawLine(new Pen(Color.Orange, 2), 0.0f, 0.0f, (float) Math.Cos((target - 90)*deg2rad)*length,
                 (float) Math.Sin((target - 90)*deg2rad)*length);
-
-            float apparent_wind_absolute = apparent_wind + heading;
-            g.DrawLine(new Pen(Color.Magenta, 2), 0.0f, 0.0f, (float)Math.Cos((apparent_wind_absolute - 90) * deg2rad) * length,
-                        (float)Math.Sin((apparent_wind_absolute - 90) * deg2rad) * length);
-
-            
             // anti NaN
 
             try
@@ -831,6 +828,74 @@ union px4_custom_mode {
             g.Transform = temp;
         }
     }
+
+
+    [Serializable]
+    public class GMapMarkerSailBoat : GMapMarker
+    {
+        const float rad2deg = (float)(180 / Math.PI);
+        const float deg2rad = (float)(1.0 / rad2deg);
+
+        static readonly Bitmap icon = global::MissionPlanner.Properties.Resources.boat;
+
+        float heading = 0;
+        float cog = -1;
+        float target = -1;
+        float nav_bearing = -1;
+        float apparent_wind = -1;
+        float rudder = 0;
+        float sail = 0;
+
+        public GMapMarkerSailBoat(PointLatLng p, float heading, float cog, float nav_bearing, float target,
+            float apparent_wind, float rudder, float sail)
+            : base(p)
+        {
+            this.heading = heading;
+            this.cog = cog;
+            this.target = target;
+            this.nav_bearing = nav_bearing;
+            this.apparent_wind = apparent_wind;
+            this.rudder = rudder;
+            this.sail = sail;
+            Size = new System.Drawing.Size(icon.Width, icon.Height);
+        }
+
+        public override void OnRender(Graphics g)
+        {
+            Matrix temp = g.Transform;
+            g.TranslateTransform(LocalPosition.X, LocalPosition.Y);
+
+            g.RotateTransform(-Overlay.Control.Bearing);
+
+            {
+                Matrix last = g.Transform;
+                g.RotateTransform(heading);
+
+                g.DrawImageUnscaled(icon, Size.Width / -2, Size.Height / -2);
+
+                g.Transform = last;
+            }
+
+            int length = 500;
+            g.DrawLine(new Pen(Color.Red, 2), 0.0f, 0.0f, (float)Math.Cos((heading - 90) * deg2rad) * length,
+                (float)Math.Sin((heading - 90) * deg2rad) * length);
+            g.DrawLine(new Pen(Color.Green, 2), 0.0f, 0.0f, (float)Math.Cos((nav_bearing - 90) * deg2rad) * length,
+                (float)Math.Sin((nav_bearing - 90) * deg2rad) * length);
+            g.DrawLine(new Pen(Color.Black, 2), 0.0f, 0.0f, (float)Math.Cos((cog - 90) * deg2rad) * length,
+                (float)Math.Sin((cog - 90) * deg2rad) * length);
+            g.DrawLine(new Pen(Color.Orange, 2), 0.0f, 0.0f, (float)Math.Cos((target - 90) * deg2rad) * length,
+                (float)Math.Sin((target - 90) * deg2rad) * length);
+
+            float apparent_wind_absolute = apparent_wind + heading;
+            g.DrawLine(new Pen(Color.Magenta, 2), 0.0f, 0.0f, (float)Math.Cos((apparent_wind_absolute - 90) * deg2rad) * length,
+                        (float)Math.Sin((apparent_wind_absolute - 90) * deg2rad) * length);
+
+
+
+            g.Transform = temp;
+        }
+    }
+
 
     [Serializable]
     public class GMapMarkerPlane : GMapMarker

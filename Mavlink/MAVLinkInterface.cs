@@ -4435,6 +4435,7 @@ Please check the following
                             MAVlist[sysid, compid].cs.firmware = MainV2.Firmwares.ArduCopter2;
                             break;
                         case MAVLink.MAV_TYPE.GROUND_ROVER:
+                        case MAVLink.MAV_TYPE.SURFACE_BOAT:
                             MAVlist[sysid, compid].cs.firmware = MainV2.Firmwares.ArduRover;
                             break;
                         case MAV_TYPE.ANTENNA_TRACKER:
