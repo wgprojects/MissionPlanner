@@ -534,7 +534,9 @@ union px4_custom_mode {
             {
                 return (new GMapMarkerSailBoat(portlocation, MAV.cs.yaw,
                     MAV.cs.groundcourse, MAV.cs.nav_bearing, MAV.cs.target_bearing,
-                    MAV.cs.wind_angle_cd / 100f, MAV.cs.ch1out, MAV.cs.ch5out));
+                    MAV.cs.wind_angle_cd / 100f,
+                    (MAV.cs.ch1out - 1500) / 500f,
+                    (MAV.cs.ch5out - 1500) / 1000f + .5f));
             }
             else if (MAV.aptype == MAVLink.MAV_TYPE.HELICOPTER)
             {
@@ -872,6 +874,32 @@ union px4_custom_mode {
                 g.RotateTransform(heading);
 
                 g.DrawImageUnscaled(icon, Size.Width / -2, Size.Height / -2);
+
+
+                var rudderAngle = rudder * 45;
+                var rudderLength = 50;
+                var rudderX = (float)Math.Cos((-rudderAngle + 90) * deg2rad) * rudderLength;
+                var rudderY = (float)Math.Sin((-rudderAngle + 90) * deg2rad) * rudderLength;
+
+                g.DrawLine(new Pen(Color.Blue, 2), 0.0f, 44, rudderX, rudderY + 40);
+
+
+                var sailAngle = sail * 90 * -Math.Sign(apparent_wind);
+                var sailLength = 70;
+                var sailX = (float)Math.Cos((-sailAngle + 90) * deg2rad) * sailLength;
+                var sailY = (float)Math.Sin((-sailAngle + 90) * deg2rad) * sailLength;
+
+                g.DrawLine(new Pen(Color.Gray, 2), 0.0f, 0, sailX, sailY);
+                g.DrawLine(new Pen(Color.Gray, 2), 0.0f, 0, -sailX, sailY);
+
+
+                if (Math.Abs(sailAngle) > Math.Abs(apparent_wind))
+                    sailAngle = -apparent_wind;
+
+                var sailXactual = (float)Math.Cos((-sailAngle + 90) * deg2rad) * sailLength;
+                var sailYactual = (float)Math.Sin((-sailAngle + 90) * deg2rad) * sailLength;
+
+                g.DrawLine(new Pen(Color.AliceBlue, 2), 0.0f, 0, sailXactual, sailYactual);
 
                 g.Transform = last;
             }
