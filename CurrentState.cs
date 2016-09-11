@@ -25,6 +25,10 @@ namespace MissionPlanner
         [DisplayText("WindDirCal (cts)")]
         public int raw_wind_ang_cal_cts { get; set; }
 
+        [DisplayText("WindSpd (kt)")]
+        public float wind_speed_anem { get; set; }
+        
+
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         public event EventHandler csCallBack;
@@ -1660,6 +1664,7 @@ namespace MissionPlanner
                         wind_angle_cd = anem.dir_cd;
                         raw_wind_ang_cts = anem.raw_dir;
                         raw_wind_ang_cal_cts = anem.cal_dir;
+                        wind_speed_anem = anem.speed_kt;
                     }
 
                     mavLinkMessage = MAV.getPacket((uint) MAVLink.MAVLINK_MSG_ID.ATTITUDE);
