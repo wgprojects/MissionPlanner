@@ -536,7 +536,7 @@ union px4_custom_mode {
                     MAV.cs.groundcourse, MAV.cs.nav_bearing, MAV.cs.target_bearing,
                     MAV.cs.wind_angle_cd / 100f,
                     (MAV.cs.ch1out - 1500) / 500f,
-                    (MAV.cs.ch5out - 1500) / 1000f + .5f));
+                    (2000 - MAV.cs.ch5out) / 1000f));
             }
             else if (MAV.aptype == MAVLink.MAV_TYPE.HELICOPTER)
             {
